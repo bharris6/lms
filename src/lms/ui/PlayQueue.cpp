@@ -123,6 +123,17 @@ PlayQueue::PlayQueue()
 	});
 	updateRadioBtn();
 
+	_focusBtn = bindNew<Wt::WText>("focus-btn", Wt::WString::tr("Lms.PlayQueue.template.focus-btn"));
+	setToolTip(*_focusBtn, Wt::WString::tr("Lms.PlayQueue.focus"));
+	_focusBtn->clicked().connect([=]
+	{
+        _focusMode = !_focusMode;
+        updateFocusBtn();
+        addTillCurrent();
+        updateFocusedTrack();
+	});
+	updateFocusBtn();
+
 	_nbTracks = bindNew<Wt::WText>("nb-tracks");
 
 	LmsApp->preQuit().connect([=]
@@ -192,6 +203,13 @@ PlayQueue::updateRadioBtn()
 {
 	_radioBtn->toggleStyleClass("text-success",_radioMode);
 	_radioBtn->toggleStyleClass("text-muted", !_radioMode);
+}
+
+void
+PlayQueue::updateFocusBtn()
+{
+    _focusBtn->toggleStyleClass("text-success",_focusMode);
+    _focusBtn->toggleStyleClass("text-success",!_focusMode);
 }
 
 Database::TrackList::pointer
@@ -318,6 +336,18 @@ PlayQueue::updateCurrentTrack(bool selected)
 		entry->bindString("is-selected", selected ? "Lms-playqueue-selected" : "");
 }
 
+void
+PlayQueue::updateFocusedTrack()
+{
+	if (!_trackPos || *_trackPos >= static_cast<std::size_t>(_entriesContainer->getCount()))
+		return;
+
+	Wt::WTemplate* entry {static_cast<Wt::WTemplate*>(_entriesContainer->getWidget(*_trackPos))};
+	if (entry) {
+        entry->doJavaScript("var _currentSelection = document.getElementsByClassName('Lms-playqueue-selected')[0]; if (_currentSelection != undefined) {_currentSelection.scrollIntoView();}");
+    }
+}
+
 std::size_t
 PlayQueue::enqueueTracks(const std::vector<Database::TrackId>& trackIds)
 {
@@ -403,6 +433,25 @@ PlayQueue::addSome()
 		addEntry(tracklistEntry);
 
 	_entriesContainer->setHasMore(_entriesContainer->getCount() < tracklist->getCount());
+}
+
+void
+PlayQueue::addTillCurrent()
+{
+    if (!_trackPos)
+        return;
+
+    auto transaction {LmsApp->getDbSession().createSharedTransaction()};
+
+    auto tracklist = getTrackList();
+
+    while(*_trackPos > _entriesContainer->getCount()) {
+        auto tracklistEntries = tracklist->getEntries(_entriesContainer->getCount(), 1);
+        for (const Database::TrackListEntry::pointer& tracklistEntry : tracklistEntries)
+            addEntry(tracklistEntry);
+    }
+
+    _entriesContainer->setHasMore(_entriesContainer->getCount() < tracklist->getCount());
 }
 
 void

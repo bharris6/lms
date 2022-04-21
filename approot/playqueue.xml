@@ -6,10 +6,11 @@
 <message id="Lms.PlayQueue.template.shuffle-btn"><i class="fa fa-fw fa-random"></i></message>
 <message id="Lms.PlayQueue.template.repeat-btn"><i class="fa fa-fw fa-repeat"></i></message>
 <message id="Lms.PlayQueue.template.radio-btn"><i class="fa fa-fw fa-rss"></i></message>
+<message id="Lms.PlayQueue.template.focus-btn"><i class="fa fa-fw fa-eye"></i></message>
 
 <message id="Lms.PlayQueue.template">
 	<div class="Lms-header">
-		${clear-btn class="Lms-playqueue-btn Lms-btn"}${shuffle-btn class="Lms-playqueue-btn Lms-btn"}${repeat-btn class="Lms-playqueue-btn Lms-btn"}${radio-btn class="Lms-playqueue-btn Lms-btn"}
+		${clear-btn class="Lms-playqueue-btn Lms-btn"}${shuffle-btn class="Lms-playqueue-btn Lms-btn"}${repeat-btn class="Lms-playqueue-btn Lms-btn"}${radio-btn class="Lms-playqueue-btn Lms-btn"}${focus-btn class="Lms-playqueue-btn Lms-btn"}
 		<h4><small>${nb-tracks}</small></h4>
 	</div>
 	<div class="row">

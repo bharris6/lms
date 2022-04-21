@@ -71,12 +71,15 @@ class PlayQueue : public Wt::WTemplate
 		void clearTracks();
 		std::size_t enqueueTracks(const std::vector<Database::TrackId>& trackIds);
 		void addSome();
+		void addTillCurrent();
 		void addEntry(const Database::ObjectPtr<Database::TrackListEntry>& entry);
 		void enqueueRadioTracks();
 		void updateInfo();
 		void updateCurrentTrack(bool selected);
+		void updateFocusedTrack();
 		void updateRepeatBtn();
 		void updateRadioBtn();
+		void updateFocusBtn();
 
 		void loadTrack(std::size_t pos, bool play);
 		void stop();
@@ -90,12 +93,14 @@ class PlayQueue : public Wt::WTemplate
 
 		bool _repeatAll {};
 		bool _radioMode {};
+		bool _focusMode {};
 		bool _mediaPlayerSettingsLoaded {};
 		Database::TrackListId _tracklistId {};
 		InfiniteScrollingContainer* _entriesContainer {};
 		Wt::WText* _nbTracks {};
 		Wt::WText* _repeatBtn {};
 		Wt::WText* _radioBtn {};
+		Wt::WText* _focusBtn {};
 		std::optional<std::size_t> _trackPos;	// current track position, if set
 };
 
